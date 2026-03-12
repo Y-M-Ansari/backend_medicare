@@ -9,7 +9,7 @@ import {
   deleteService,
 } from "../controllers/serviceController.js";
 
-const upload = multer({ dest: "/tmp" }); 
+const upload = multer({ storage: multer.memoryStorage() }); 
 
 const serviceRouter = express.Router();
 

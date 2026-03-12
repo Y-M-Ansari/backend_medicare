@@ -15,8 +15,10 @@ const port = process.env.PORT || 4000;
 
 
 const allowedOrigins = [
-  "https://frontend-medicare-ym.vercel.app/", 
-  "https://admin-medicare-ym.vercel.app/", 
+  "https://frontend-medicare-ym.vercel.app", 
+  "https://admin-medicare-ym.vercel.app", 
+  "http://localhost:5173",
+  "http://localhost:5174",
 ];
 
 app.use(

@@ -71,9 +71,12 @@ export async function createService(req, res) {
     let imagePublicId = null;
     if (req.file) {
       try {
-        const up = await uploadToCloudinary(req.file.path, "services");
-        imageUrl = up?.secure_url || null;
-        imagePublicId = up?.public_id || null;
+        const fileData = req.file.path || req.file.buffer;
+        if (fileData) {
+          const up = await uploadToCloudinary(fileData, "services");
+          imageUrl = up?.secure_url || null;
+          imagePublicId = up?.public_id || null;
+        }
       } catch (err) {
         console.error("Cloudinary upload error:", err);
       }
@@ -149,15 +152,18 @@ export async function updateService(req, res) {
 
     if (req.file) {
       try {
-        const up = await uploadToCloudinary(req.file.path, "services");
-        if (up?.secure_url) {
-          updateData.imageUrl = up.secure_url;
-          updateData.imagePublicId = up.public_id || null;
-          if (existing.imagePublicId) {
-            try {
-              await deleteFromCloudinary(existing.imagePublicId);
-            } catch (err) {
-              console.warn("Cloudinary delete failed:", err?.message || err);
+        const fileData = req.file.path || req.file.buffer;
+        if (fileData) {
+          const up = await uploadToCloudinary(fileData, "services");
+          if (up?.secure_url) {
+            updateData.imageUrl = up.secure_url;
+            updateData.imagePublicId = up.public_id || null;
+            if (existing.imagePublicId) {
+              try {
+                await deleteFromCloudinary(existing.imagePublicId);
+              } catch (err) {
+                console.warn("Cloudinary delete failed:", err?.message || err);
+              }
             }
           }
         }

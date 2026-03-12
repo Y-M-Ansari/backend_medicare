@@ -14,15 +14,47 @@ cloudinary.config({
 
 
 
-export async function uploadToCloudinary(filePath, folder = "Doctor") {
-  try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder,
-      resource_type: "image",
-    });
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import { Readable } from "stream";
 
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
+
+
+export async function uploadToCloudinary(filePathOrBuffer, folder = "Doctor") {
+  try {
+    let result;
     
-    fs.unlinkSync(filePath);
+    if (Buffer.isBuffer(filePathOrBuffer)) {
+      // Handle buffer (memory storage)
+      result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder, resource_type: "image" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        Readable.from(filePathOrBuffer).pipe(stream);
+      });
+    } else {
+      // Handle file path (disk storage)
+      result = await cloudinary.uploader.upload(filePathOrBuffer, {
+        folder,
+        resource_type: "image",
+      });
+      
+      if (fs.existsSync(filePathOrBuffer)) {
+        fs.unlinkSync(filePathOrBuffer);
+      }
+    }
 
     return result;  
   } catch (err) {
