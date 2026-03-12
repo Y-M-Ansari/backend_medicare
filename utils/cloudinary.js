@@ -1,20 +1,4 @@
-
-import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
-
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-
-
-
-
-
-import { v2 as cloudinary } from "cloudinary";
+﻿import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import { Readable } from "stream";
 
@@ -24,8 +8,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
-
 
 
 export async function uploadToCloudinary(filePathOrBuffer, folder = "Doctor") {
@@ -62,9 +44,6 @@ export async function uploadToCloudinary(filePathOrBuffer, folder = "Doctor") {
     throw err;
   }
 }
-
-
-
 
 
 export async function deleteFromCloudinary(publicId) {
