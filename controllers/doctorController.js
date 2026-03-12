@@ -1,4 +1,3 @@
-
 import jwt from "jsonwebtoken";
 import Doctor from "../models/Doctor.js";
 import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
@@ -58,6 +57,12 @@ function normalizeDocForClient(raw = {}) {
   return doc;
 }
 
+// Helper to safely parse numbers
+function safeNumber(val, def = 0) {
+  const n = Number(val);
+  return isNaN(n) ? def : n;
+}
+
 
 
 export async function createDoctor(req, res) {
@@ -97,7 +102,7 @@ export async function createDoctor(req, res) {
       qualifications: body.qualifications || "",
       location: body.location || "",
       about: body.about || "",
-      fee: body.fee !== undefined ? Number(body.fee) : 0,
+      fee: safeNumber(body.fee, 0),
       schedule,
       success: body.success || "",
       patients: body.patients || "",
